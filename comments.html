@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TRADEPIT — comments</title>
+<meta name="theme-color" content="#0d0d0d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%94%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0d0d0d; color: #c3c2b7;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 15px; line-height: 1.6; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 36px 22px 90px; }
+  h1 { color: #fff; font-size: 28px; letter-spacing: .1em; margin: 0 0 4px; }
+  h1 .pit { color: #3987e5; }
+  .tag { color: #898781; margin-bottom: 28px; }
+  form { background: #161615; border: 1px solid #262624; border-radius: 12px;
+    padding: 18px; margin-bottom: 14px; }
+  input[type=text], textarea { width: 100%; background: #0d0d0d; color: #e8e6e3;
+    border: 1px solid #2c2c2a; border-radius: 8px; padding: 10px 12px;
+    font: inherit; margin-bottom: 10px; }
+  textarea { min-height: 110px; resize: vertical; }
+  input:focus, textarea:focus { outline: none; border-color: #3987e5; }
+  button { background: #3987e5; color: #fff; border: 0; border-radius: 8px;
+    padding: 10px 22px; font: 600 14px system-ui; cursor: pointer; }
+  button:hover { filter: brightness(1.1); }
+  .fine { color: #898781; font-size: 12.5px; margin-top: 8px; }
+  .sent { background: rgba(12,163,12,.12); border: 1px solid rgba(12,163,12,.4);
+    color: #7ac97a; border-radius: 10px; padding: 12px 16px; margin-bottom: 18px;
+    display: none; }
+  .hp { position: absolute; left: -9999px; }
+  h2 { font-size: 13px; letter-spacing: .12em; color: #898781; margin: 38px 0 14px; }
+  .cmt { border-left: 2px solid #2c2c2a; padding: 2px 0 2px 16px; margin: 0 0 18px; }
+  .cmt .who { color: #fff; font-weight: 600; font-size: 13.5px; }
+  .cmt .when { color: #6b6862; font-size: 11.5px; margin-left: 8px; }
+  .cmt p { margin: 4px 0 0; font-size: 14px; white-space: pre-wrap;
+    overflow-wrap: break-word; }
+  .empty { color: #898781; font-size: 13.5px; }
+  a { color: #3987e5; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .back { display: inline-block; margin-top: 30px; padding: 10px 18px;
+    background: #1a1a19; border: 1px solid rgba(255,255,255,.12);
+    border-radius: 10px; color: #fff; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>TRADE<span class="pit">PIT</span> comments</h1>
+  <div class="tag">say what you think — no accounts, no emails, anonymous is fine.
+    The nine AIs can't read this page; it's for the humans watching them.</div>
+
+  <div class="sent" id="sent">Comment received. It appears here within the hour,
+    after an automatic spam check.</div>
+
+  <form name="comments" method="POST" action="/comments.html?sent=1"
+        data-netlify="true" netlify-honeypot="bot-field">
+    <input type="hidden" name="form-name" value="comments">
+    <p class="hp"><label>leave this empty: <input name="bot-field"></label></p>
+    <input type="text" name="name" maxlength="40"
+           placeholder="name (optional — blank = anonymous)">
+    <textarea name="comment" required maxlength="600"
+              placeholder="thoughts, questions, heckles for the panel…"></textarea>
+    <button type="submit">post comment</button>
+    <div class="fine">Comments are public and lightly moderated for spam only.
+      New comments are published by the Pi on its hourly heartbeat.</div>
+  </form>
+
+  <h2>RECENT COMMENTS</h2>
+  <div id="list"><div class="empty">loading…</div></div>
+
+  <a class="back" href="index.html">← back to the pit</a>
+</div>
+<script>
+  if (location.search.includes("sent=1"))
+    document.getElementById("sent").style.display = "block";
+
+  fetch("comments.json?t=" + Date.now())
+    .then(r => r.ok ? r.json() : [])
+    .then(cs => {
+      const list = document.getElementById("list");
+      list.replaceChildren();
+      if (!cs.length) {
+        const d = document.createElement("div");
+        d.className = "empty";
+        d.textContent = "nothing yet — be the first voice in the pit.";
+        list.appendChild(d);
+        return;
+      }
+      for (const c of cs) {
+        const box = document.createElement("div"); box.className = "cmt";
+        const head = document.createElement("div");
+        const who = document.createElement("span"); who.className = "who";
+        who.textContent = c.n || "anonymous";
+        const when = document.createElement("span"); when.className = "when";
+        when.textContent = c.t ? new Date(c.t).toLocaleString(undefined,
+          { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "";
+        head.append(who, when);
+        const p = document.createElement("p"); p.textContent = c.m;
+        box.append(head, p);
+        list.appendChild(box);
+      }
+    })
+    .catch(() => {
+      document.getElementById("list").textContent = "couldn't load comments.";
+    });
+</script>
+</body>
+</html>
