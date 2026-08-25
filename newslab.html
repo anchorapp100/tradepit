@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TRADEPIT — news lab</title>
+<meta name="theme-color" content="#0d0d0d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%94%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0d0d0d; color: #c3c2b7;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 15px; line-height: 1.6; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 36px 22px 90px; }
+  h1 { color: #fff; font-size: 28px; letter-spacing: .1em; margin: 0 0 4px; }
+  h1 .pit { color: #3987e5; }
+  .tag { color: #898781; margin-bottom: 18px; }
+  .note { background: #161615; border: 1px solid #262624; border-radius: 10px;
+    padding: 12px 16px; font-size: 13px; color: #a5a49a; margin-bottom: 30px; }
+  .note b { color: #c3c2b7; }
+  h2 { font-size: 13px; letter-spacing: .12em; color: #898781; margin: 34px 0 12px; }
+  .board { background: #131312; border: 1px solid #262624; border-radius: 12px;
+    padding: 16px; overflow-x: auto; }
+  .grid { display: inline-block; min-width: 100%; }
+  .axis { display: flex; margin-left: 64px; margin-bottom: 6px; }
+  .axis span { color: #6b6862; font-size: 10px; }
+  .coinrow { display: flex; align-items: center; margin-bottom: 10px; }
+  .coinlbl { width: 56px; flex: 0 0 56px; color: #fff; font-weight: 700;
+    font-size: 12.5px; position: sticky; left: 0; z-index: 2;
+    background: linear-gradient(90deg, #131312 78%, transparent);
+    align-self: stretch; display: flex; align-items: center; }
+  .strips { display: flex; flex-direction: column; gap: 3px; }
+  .strip { display: flex; gap: 2px; }
+  .cell { width: 11px; height: 15px; border-radius: 2px; background: #1c1c1b;
+    flex: 0 0 11px; }
+  .trendstrip { height: 30px; margin: 1px 0; }
+  .trendstrip svg { display: block; }
+  .rowtags { width: 46px; flex: 0 0 46px; color: #6b6862; font-size: 9.5px;
+    line-height: 1.5; padding-left: 8px; letter-spacing: .05em; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th { text-align: left; color: #898781; font-size: 11px; letter-spacing: .08em;
+    border-bottom: 1px solid #2c2c2a; padding: 6px 10px 6px 0; }
+  td { padding: 6px 10px 6px 0; border-bottom: 1px solid #1d1d1c; }
+  td.num, th.num { text-align: right; }
+  .up { color: #0ca30c; } .down { color: #d55151; } .mut { color: #898781; }
+  .terms { display: flex; flex-wrap: wrap; gap: 8px; }
+  .term { border-radius: 999px; padding: 4px 12px; font-size: 13px;
+    background: #1c1c1b; border: 1px solid #2c2c2a; color: #c3c2b7; }
+  .term b { color: #fff; }
+  .term .n { color: #898781; font-size: 11px; margin-left: 4px; }
+  .term .riser { color: #fab219; font-size: 10.5px; margin-left: 5px;
+    letter-spacing: .05em; }
+  .term.tpos { border-color: rgba(12,163,12,.55); background: rgba(12,163,12,.10); }
+  .term.tneg { border-color: rgba(213,81,81,.55); background: rgba(213,81,81,.10); }
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; color: #898781;
+    font-size: 12px; margin: 10px 2px 0; }
+  .legend i { display: inline-block; width: 11px; height: 11px; border-radius: 2px;
+    vertical-align: -1px; margin-right: 5px; }
+  a { color: #3987e5; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .back { display: inline-block; margin-top: 30px; padding: 10px 18px;
+    background: #1a1a19; border: 1px solid rgba(255,255,255,.12);
+    border-radius: 10px; color: #fff; font-weight: 600; }
+  .empty { color: #898781; font-size: 13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>TRADE<span class="pit">PIT</span> news lab</h1>
+  <div class="tag">keywords vs price, eyeballed — the manual ancestor of the event ledger</div>
+
+  <div class="note"><b>What this is.</b> Every 15 minutes the Pi counts each coin's
+    headline mentions and their keyword flavour (positive/negative words; regulatory,
+    security, adoption, macro categories) — no AI involved, just counting. This page
+    lines those counts up against hourly price moves so a human can look for
+    correlation before any of it is fed to the panel (that step comes later, as a
+    marked version change). <b>Caveats:</b> counting is not reading — "XRP crash
+    fears fade" scores a scary word; the matrix started logging on 23&nbsp;August, so
+    early days are sparse; and eyeballed correlation is a hypothesis generator, not
+    evidence. The event ledger will do this properly, with numbers.</div>
+
+  <h2>NEWS FLOW vs PRICE — LAST 3 DAYS, HOURLY <span id="metainfo" style="letter-spacing:0;color:#6b6862"></span></h2>
+  <div class="board" id="matrixboard"><div class="grid" id="grid"><div class="empty">loading…</div></div>
+  <div class="legend">
+    <span><i style="background:#0ca30c"></i>news flow, net positive words</span>
+    <span><i style="background:#d55151"></i>news flow, net negative words</span>
+    <span><i style="background:#fab219"></i>news flow, neutral</span>
+    <span><i style="background:#1c1c1b;border:1px solid #2c2c2a"></i>quiet / no data</span>
+    <span>brightness = how much new coverage · bottom strip = that hour's price move</span>
+  </div></div>
+
+  <h2>NEWS SENTIMENT TREND <span style="letter-spacing:0;color:#6b6862">· smoothed tide · scrolls with the matrix above</span></h2>
+  <div class="board" id="trendboard"><div class="grid" id="trendgrid"><div class="empty">loading…</div></div>
+  <div class="legend">
+    <span><i style="background:#0ca30c"></i>sustained positive coverage</span>
+    <span><i style="background:#d55151"></i>sustained negative</span>
+    <span><i style="background:#fab219"></i>coverage burst</span>
+    <span><i style="background:#6f8fc0"></i>price path (same lane)</span>
+    <span>a smoothed sentiment tide per coin — watch whether the news turns
+      before price does. <b style="color:#fab219">MOOD</b> = all five combined.</span>
+  </div></div>
+
+  <h2>TRENDING WORDS — OPEN VOCABULARY, LAST SNAPSHOT vs 24h BASELINE</h2>
+  <div class="board" id="trend"><div class="empty">loading…</div>
+  <div class="legend">
+    <span><i style="background:#0ca30c"></i>positive word (VADER lexicon)</span>
+    <span><i style="background:#d55151"></i>negative word</span>
+    <span><i style="background:#3a3a38"></i>neutral / unknown</span>
+    <span>every headline word is counted (stopwords dropped) — new terms flag
+      themselves by bursting against their own baseline</span>
+  </div></div>
+
+  <h2>BIGGEST NEWS HOURS — AND WHAT PRICE DID NEXT</h2>
+  <div class="board" id="events"><div class="empty">loading…</div></div>
+
+  <a class="back" href="index.html">← back to the pit</a>
+  &nbsp; <a href="newstest.html">the prediction testbed</a>
+  &nbsp;·&nbsp; <a href="findings.html">the findings journal</a>
+  &nbsp;·&nbsp; <a href="roadmap.html">the roadmap</a>
+</div>
+<script>
+const H = 3600 * 1000, HOURS = 72;
+const CATS = ["regulatory", "security", "adoption", "macro", "political"];
+const SVGNS = "http://www.w3.org/2000/svg";
+const PITCH = 13, TREND_H = 30;
+
+function svgEl(tag, attrs) {
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+}
+
+/* a continuous, segment-coloured news-sentiment trendline for one coin (or the
+   market aggregate). EMA of net valence pulls toward fresh sentiment and decays
+   toward neutral when a coin goes quiet, so sustained positive/negative runs
+   read as green/red slopes. Burst dots mark hours of heavy new coverage; a faint
+   blue path traces the price trajectory in the same lane for eyeballing lead/lag. */
+function buildTrendStrip(key, hours, flow, candles) {
+  const W = hours.length * PITCH, y0 = TREND_H / 2;
+  const X = i => i * PITCH + 5.5;
+  const wrap = document.createElement("div"); wrap.className = "trendstrip";
+  const svg = svgEl("svg", { width: W, height: TREND_H,
+    viewBox: `0 0 ${W} ${TREND_H}` });
+  let ema = 0; const pts = [], vols = [];
+  for (const h of hours) {
+    const f = flow[key][h], live = f && !f.seed && f.n > 0;
+    ema = live ? ema * 0.6 + f.dv * 0.4 : ema * 0.85;
+    pts.push(ema); vols.push(live ? f.n : 0);
+  }
+  const maxAbs = Math.max(1, ...pts.map(Math.abs));
+  const yScale = (TREND_H / 2 - 4) / maxAbs;
+  const Y = v => y0 - v * yScale;
+  svg.appendChild(svgEl("line", { x1: 0, y1: y0, x2: W, y2: y0,
+    stroke: "#333331", "stroke-width": 1, "stroke-dasharray": "2 3" }));
+  if (candles) {
+    const lvl = hours.map(h => { const r = candles.find(x => x[0] === h);
+      return r ? r[1] : null; });
+    const known = lvl.filter(v => v !== null);
+    if (known.length > 1) {
+      const lo = Math.min(...known), span = (Math.max(...known) - lo) || 1;
+      let d = "", started = false, lastY = y0;
+      for (let i = 0; i < lvl.length; i++) {
+        const y = lvl[i] === null ? lastY
+          : (TREND_H - 3) - ((lvl[i] - lo) / span) * (TREND_H - 6);
+        lastY = y; d += (started ? " L" : "M") + X(i) + " " + y; started = true;
+      }
+      const pp = svgEl("path", { d, fill: "none", stroke: "#4a6fa5",
+        "stroke-width": 1, opacity: .5 });
+      pp.appendChild(svgEl("title", {})).textContent = "price trajectory";
+      svg.appendChild(pp);
+    }
+  }
+  for (let i = 1; i < pts.length; i++) {
+    const mid = (pts[i] + pts[i - 1]) / 2;
+    const col = mid > 0.15 ? "#0ca30c" : (mid < -0.15 ? "#d55151" : "#7d7d34");
+    svg.appendChild(svgEl("line", { x1: X(i - 1), y1: Y(pts[i - 1]),
+      x2: X(i), y2: Y(pts[i]), stroke: col, "stroke-width": 2,
+      "stroke-linecap": "round" }));
+  }
+  const volMax = Math.max(1, ...vols);
+  for (let i = 0; i < vols.length; i++) {
+    if (vols[i] >= Math.max(3, volMax * 0.6)) {
+      const dot = svgEl("circle", { cx: X(i), cy: Y(pts[i]), r: 2.4,
+        fill: "#fab219", stroke: "#0d0d0d", "stroke-width": .8 });
+      dot.appendChild(svgEl("title", {})).textContent =
+        new Date(hours[i]).toUTCString().slice(5, 17) +
+        ` — ${key === "__mkt" ? "market" : key}: ${vols[i]} new mentions`;
+      svg.appendChild(dot);
+    }
+  }
+  wrap.appendChild(svg);
+  return wrap;
+}
+
+/* the hour axis, identical for the matrix and the trend card so their columns
+   line up when the two boards scroll together */
+function buildAxis(hours) {
+  const axis = document.createElement("div"); axis.className = "axis";
+  for (let i = 0; i < hours.length; i++) {
+    const sp = document.createElement("span");
+    sp.style.width = PITCH + "px"; sp.style.flex = "0 0 " + PITCH + "px";
+    if (i % 6 === 0) {
+      const d = new Date(hours[i]);
+      sp.textContent = String(d.getUTCHours()).padStart(2, "0");
+      sp.title = d.toUTCString();
+    }
+    axis.appendChild(sp);
+  }
+  return axis;
+}
+
+fetch("newslab.json?t=" + Date.now())
+  .then(r => { if (!r.ok) throw 0; return r.json(); })
+  .then(render)
+  .catch(() => {
+    document.getElementById("grid").innerHTML =
+      '<div class="empty">no data yet — the Pi builds newslab.json on its hourly heartbeat.</div>';
+    document.getElementById("events").innerHTML = "";
+  });
+
+function render(D) {
+  const snaps = (D.matrix || []).map(r => ({ t: Date.parse(r.ts), m: r.m }))
+    .sort((a, b) => a.t - b.t);
+  const coins = Object.keys(D.candles || {});
+  if (!snaps.length || !coins.length) {
+    document.getElementById("grid").innerHTML =
+      '<div class="empty">warming up — first matrix snapshots land within the hour.</div>';
+    document.getElementById("events").innerHTML =
+      '<div class="empty">nothing yet.</div>';
+    return;
+  }
+  document.getElementById("metainfo").textContent =
+    " · " + snaps.length + " snapshots since " +
+    new Date(snaps[0].t).toUTCString().slice(5, 16);
+
+  /* hourly buckets: last snapshot per hour; flow = delta vs previous bucket */
+  const byHour = new Map();
+  for (const s of snaps) byHour.set(Math.floor(s.t / H) * H, s);
+  const hourKeys = [...byHour.keys()].sort((a, b) => a - b);
+
+  const flow = {};   // flow[coin][hour] = {n, dv, cats:{}}
+  for (const c of coins) flow[c] = {};
+  for (let i = 0; i < hourKeys.length; i++) {
+    const h = hourKeys[i], cur = byHour.get(h).m;
+    const prev = i > 0 ? byHour.get(hourKeys[i - 1]).m : null;
+    for (const c of coins) {
+      const a = cur[c]; if (!a) continue;
+      if (!prev || !prev[c]) { flow[c][h] = { seed: true }; continue; }
+      const b = prev[c];
+      const n = Math.max(0, a.mentions - b.mentions);
+      const dv = Math.max(0, a.pos - b.pos) - Math.max(0, a.neg - b.neg);
+      const cats = {};
+      for (const k of CATS) {
+        const d = Math.max(0, (a[k] || 0) - (b[k] || 0));
+        if (d) cats[k] = d;
+      }
+      flow[c][h] = { n, dv, cats };
+    }
+  }
+
+  /* price returns per hour (close vs previous close); candle ts = open time */
+  const ret = {};
+  for (const c of coins) {
+    ret[c] = {};
+    const cs = D.candles[c];
+    for (let i = 1; i < cs.length; i++)
+      ret[c][cs[i][0]] = 100 * (cs[i][1] / cs[i - 1][1] - 1);
+  }
+
+  const lastHour = Math.max(...coins.map(c => {
+    const cs = D.candles[c]; return cs.length ? cs[cs.length - 1][0] : 0; }));
+  const hours = []; for (let i = HOURS - 1; i >= 0; i--) hours.push(lastHour - i * H);
+
+  const grid = document.getElementById("grid");
+  grid.replaceChildren();
+  grid.appendChild(buildAxis(hours));
+
+  for (const c of coins) {
+    const row = document.createElement("div"); row.className = "coinrow";
+    const lbl = document.createElement("div"); lbl.className = "coinlbl";
+    lbl.textContent = c;
+    const strips = document.createElement("div"); strips.className = "strips";
+    const sNews = document.createElement("div"); sNews.className = "strip";
+    const sPx = document.createElement("div"); sPx.className = "strip";
+    for (const h of hours) {
+      const f = flow[c][h], r = ret[c][h];
+      const cn = document.createElement("div"); cn.className = "cell";
+      if (f && !f.seed && f.n > 0) {
+        const col = f.dv > 0 ? "12,163,12" : (f.dv < 0 ? "213,81,81" : "250,178,25");
+        cn.style.background = `rgba(${col},${Math.min(1, 0.28 + f.n / 5)})`;
+        cn.title = new Date(h).toUTCString().slice(0, 22) +
+          ` — ${c}: +${f.n} new mention${f.n > 1 ? "s" : ""}, valence ${f.dv > 0 ? "+" : ""}${f.dv}` +
+          (Object.keys(f.cats).length ? " · " +
+            Object.entries(f.cats).map(([k, v]) => k + "×" + v).join(", ") : "");
+      } else if (f && f.seed) {
+        cn.style.background = "#232322";
+        cn.title = "first snapshot (no baseline yet)";
+      }
+      const cp = document.createElement("div"); cp.className = "cell";
+      if (r !== undefined) {
+        const col = r >= 0 ? "12,163,12" : "213,81,81";
+        cp.style.background = `rgba(${col},${Math.min(1, 0.18 + Math.abs(r) / 2)})`;
+        cp.title = new Date(h).toUTCString().slice(0, 22) +
+          ` — ${c} ${r >= 0 ? "+" : ""}${r.toFixed(2)}% (1h)`;
+      }
+      sNews.appendChild(cn); sPx.appendChild(cp);
+    }
+    const tags = document.createElement("div"); tags.className = "rowtags";
+    tags.innerHTML = "news<br>price";
+    strips.append(sNews, sPx);
+    row.append(lbl, strips, tags);
+    grid.appendChild(row);
+  }
+
+  /* ---- separate trend card: just the sentiment trend lines, same timeline,
+     scroll-locked to the matrix above ---- */
+  flow.__mkt = {};
+  for (const h of hours) {
+    let n = 0, dv = 0, any = false;
+    for (const c of coins) {
+      const f = flow[c][h];
+      if (f && !f.seed) { n += f.n || 0; dv += f.dv || 0; any = true; }
+    }
+    flow.__mkt[h] = any ? { n, dv } : { seed: true };
+  }
+  const tg = document.getElementById("trendgrid");
+  tg.replaceChildren();
+  tg.appendChild(buildAxis(hours));
+  const trendRows = [["MOOD", "__mkt", null, "#fab219"]]
+    .concat(coins.map(c => [c, c, D.candles[c], null]));
+  for (const [label, key, cand, colr] of trendRows) {
+    const row = document.createElement("div"); row.className = "coinrow";
+    const lbl = document.createElement("div"); lbl.className = "coinlbl";
+    lbl.textContent = label; if (colr) lbl.style.color = colr;
+    const strips = document.createElement("div"); strips.className = "strips";
+    strips.appendChild(buildTrendStrip(key, hours, flow, cand));
+    const tags = document.createElement("div"); tags.className = "rowtags";
+    tags.innerHTML = key === "__mkt" ? "news<br>mood" : "sentiment";
+    row.append(lbl, strips, tags);
+    tg.appendChild(row);
+  }
+  /* scroll-lock the matrix and the trend card so their timelines stay aligned */
+  const mBoard = document.getElementById("matrixboard"),
+    tBoard = document.getElementById("trendboard");
+  if (mBoard && tBoard) {
+    let lock = false;
+    const sync = (from, to) => {
+      if (lock) return; lock = true; to.scrollLeft = from.scrollLeft;
+      requestAnimationFrame(() => { lock = false; });
+    };
+    mBoard.addEventListener("scroll", () => sync(mBoard, tBoard));
+    tBoard.addEventListener("scroll", () => sync(tBoard, mBoard));
+  }
+
+  /* trending words: latest snapshot's open-vocab counts vs 24h baseline */
+  const tbox = document.getElementById("trend");
+  const withTerms = (D.matrix || []).filter(r => r.terms)
+    .map(r => ({ t: Date.parse(r.ts), terms: r.terms }))
+    .sort((a, b) => a.t - b.t);
+  if (!withTerms.length) {
+    tbox.firstElementChild.textContent =
+      "no open-vocabulary snapshots yet — counting starts with the next news refresh.";
+  } else {
+    const latest = withTerms[withTerms.length - 1];
+    const dayAgo = latest.t - 24 * H;
+    const base = withTerms.filter(x => x.t >= dayAgo && x.t < latest.t);
+    const baseAvg = w => base.length ?
+      base.reduce((a, x) => a + ((x.terms[w] || [0])[0]), 0) / base.length : 0;
+    const rows = Object.entries(latest.terms)
+      .map(([w, [n, v]]) => ({ w, n, v, rise: n - baseAvg(w), isNew: baseAvg(w) < 0.5 }))
+      .sort((a, b) => b.rise - a.rise || b.n - a.n)
+      .slice(0, 34);
+    const wrap = document.createElement("div"); wrap.className = "terms";
+    for (const r of rows) {
+      const chip = document.createElement("span");
+      chip.className = "term" + (r.v >= 0.5 ? " tpos" : (r.v <= -0.5 ? " tneg" : ""));
+      chip.title = `"${r.w}" in ${r.n} headlines · valence ${r.v > 0 ? "+" : ""}${r.v}` +
+        (base.length ? ` · 24h baseline ${baseAvg(r.w).toFixed(1)}` : " · no baseline yet");
+      const b = document.createElement("b"); b.textContent = r.w;
+      const n = document.createElement("span"); n.className = "n";
+      n.textContent = "×" + r.n;
+      chip.append(b, n);
+      if (base.length && (r.isNew || r.rise >= 2)) {
+        const rs = document.createElement("span"); rs.className = "riser";
+        rs.textContent = r.isNew ? "NEW" : "↑" + r.rise.toFixed(0);
+        chip.appendChild(rs);
+      }
+      wrap.appendChild(chip);
+    }
+    tbox.replaceChildren(wrap, tbox.lastElementChild);
+  }
+
+  /* biggest news hours table */
+  const events = [];
+  for (const c of coins) for (const [h, f] of Object.entries(flow[c])) {
+    if (!f || f.seed || !f.n) continue;
+    const hh = Number(h);
+    const r1 = ret[c][hh + H], cs = D.candles[c];
+    const closeAt = t => { const row = cs.find(x => x[0] === t); return row ? row[1] : null; };
+    const c0 = closeAt(hh), c4 = closeAt(hh + 4 * H);
+    events.push({ c, h: hh, n: f.n, dv: f.dv, cats: f.cats,
+      r1: r1 !== undefined ? r1 : null,
+      r4: (c0 && c4) ? 100 * (c4 / c0 - 1) : null });
+  }
+  events.sort((a, b) => b.n - a.n || Math.abs(b.dv) - Math.abs(a.dv));
+  const box = document.getElementById("events");
+  box.replaceChildren();
+  if (!events.length) {
+    box.innerHTML = '<div class="empty">no news bursts recorded yet — the matrix ' +
+      'needs a few hours of history before deltas exist. Come back tomorrow.</div>';
+    return;
+  }
+  const tbl = document.createElement("table");
+  tbl.innerHTML = "<thead><tr><th>hour (UTC)</th><th>coin</th>" +
+    "<th class=num>new mentions</th><th class=num>valence</th><th>categories</th>" +
+    "<th class=num>next 1h</th><th class=num>next 4h</th></tr></thead>";
+  const tb = document.createElement("tbody");
+  for (const e of events.slice(0, 14)) {
+    const tr = document.createElement("tr");
+    const pct = v => v === null ? '<span class="mut">–</span>' :
+      `<span class="${v >= 0 ? "up" : "down"}">${v >= 0 ? "+" : ""}${v.toFixed(2)}%</span>`;
+    tr.innerHTML = `<td>${new Date(e.h).toUTCString().slice(5, 22)}</td>` +
+      `<td><b>${e.c}</b></td><td class=num>+${e.n}</td>` +
+      `<td class=num>${e.dv > 0 ? "+" : ""}${e.dv}</td>` +
+      `<td class=mut>${Object.entries(e.cats).map(([k, v]) => k + "×" + v).join(", ") || "–"}</td>` +
+      `<td class=num>${pct(e.r1)}</td><td class=num>${pct(e.r4)}</td>`;
+    tb.appendChild(tr);
+  }
+  tbl.appendChild(tb);
+  box.appendChild(tbl);
+}
+</script>
+</body>
+</html>
