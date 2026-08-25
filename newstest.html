@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TRADEPIT — newstest</title>
+<meta name="theme-color" content="#0d0d0d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%94%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0d0d0d; color: #c3c2b7;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 14.5px; line-height: 1.6; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 36px 22px 90px; }
+  h1 { color: #fff; font-size: 28px; letter-spacing: .1em; margin: 0 0 4px; }
+  h1 em { color: #fab219; font-style: normal; }
+  .tag { color: #898781; margin-bottom: 22px; }
+  .rules { background: #161615; border: 1px solid #262624; border-radius: 10px;
+    padding: 14px 18px; font-size: 13.5px; color: #a5a49a; margin-bottom: 34px; }
+  .rules b { color: #c3c2b7; }
+  h2 { font-size: 12.5px; letter-spacing: .12em; color: #898781; margin: 32px 0 12px; }
+  .card { background: #131312; border: 1px solid #262624; border-radius: 12px;
+    padding: 16px; margin-bottom: 14px; }
+  .case h3 { margin: 0 0 2px; color: #fff; font-size: 15px; }
+  .meta { color: #898781; font-size: 12px; margin-bottom: 10px; }
+  .chip { display: inline-block; border-radius: 999px; padding: 2px 10px;
+    font-size: 11.5px; background: #1c1c1b; border: 1px solid #2c2c2a;
+    margin: 2px 4px 2px 0; }
+  .chip.pos { border-color: rgba(12,163,12,.55); color: #7ac97a; }
+  .chip.neg { border-color: rgba(213,81,81,.55); color: #e08a8a; }
+  .chip.gold { border-color: rgba(250,178,25,.55); color: #fab219; }
+  .chip.blue { border-color: rgba(57,135,229,.55); color: #8fb8ea; }
+  .preds { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+  @media (max-width: 700px) { .preds { grid-template-columns: 1fr; } }
+  details.coingroup { background: #131312; border: 1px solid #262624;
+    border-radius: 12px; margin-bottom: 12px; }
+  details.coingroup > summary { cursor: pointer; padding: 13px 16px;
+    list-style: none; display: flex; gap: 12px; align-items: baseline;
+    flex-wrap: wrap; }
+  details.coingroup > summary::before { content: "▸"; color: #898781;
+    margin-right: 2px; }
+  details.coingroup[open] > summary::before { content: "▾"; }
+  .coinname { color: #fff; font-weight: 700; font-size: 15px;
+    letter-spacing: .06em; }
+  .gsum { color: #898781; font-size: 12.5px; }
+  .gbody { padding: 0 14px 12px; }
+  details.caserow { border: 1px solid #232322; border-radius: 10px;
+    margin-bottom: 8px; background: #161615; }
+  details.caserow > summary { cursor: pointer; padding: 10px 12px;
+    list-style: none; display: flex; gap: 8px; align-items: baseline;
+    flex-wrap: wrap; }
+  details.caserow > summary::before { content: "▸"; color: #6b6862; }
+  details.caserow[open] > summary::before { content: "▾"; }
+  .ctitle { color: #fff; font-weight: 600; flex: 1 1 300px; font-size: 13.5px; }
+  .cbody { padding: 2px 12px 12px; }
+  .pred { background: #161615; border: 1px solid #262624; border-radius: 10px;
+    padding: 10px 12px; }
+  .pred h4 { margin: 0 0 6px; color: #fff; font-size: 13px; }
+  .hit { color: #0ca30c; font-weight: 700; } .miss { color: #d55151; font-weight: 700; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th { text-align: left; color: #898781; font-size: 11px; letter-spacing: .08em;
+    border-bottom: 1px solid #2c2c2a; padding: 5px 10px 5px 0; }
+  td { padding: 6px 10px 6px 0; border-bottom: 1px solid #1d1d1c; }
+  .num { text-align: right; }
+  .up { color: #0ca30c; } .down { color: #d55151; } .mut { color: #898781; }
+  a { color: #3987e5; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .back { display: inline-block; margin-top: 30px; padding: 10px 18px;
+    background: #1a1a19; border: 1px solid rgba(255,255,255,.12);
+    border-radius: 10px; color: #fff; font-weight: 600; }
+  .empty { color: #898781; font-size: 13.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>NEWS<em>TEST</em></h1>
+  <div class="tag">a sister experiment to the pit: can a blinded AI predict what a
+    news story means for price — before the outcome exists?</div>
+
+  <div class="rules">
+    <b>How it works.</b> A news article goes in; its keywords are extracted by
+    machine; two independent AI analysts (Gemini via API, Grok via CLI — both with
+    web access disabled, so they cannot look up the ending) each produce a
+    <b>locked, timestamped prediction</b>: direction over 24h and 7d, expected
+    magnitude, confidence. Only after locking is the real price revealed and the
+    prediction graded. <b>CLEAN</b> cases are dated after every model's training —
+    the outcome was genuinely unknowable. <b>HINDSIGHT-RISK</b> cases predate that
+    bar: the model may simply remember what happened, so they test the pipeline,
+    never skill, and the two are never mixed. What survives here shapes what the
+    pit's event ledger will eventually be allowed to whisper to the panel.
+    Predictions run on the operator's local testbed; this page is the published
+    results ledger.
+  </div>
+
+  <h2>SCOREBOARD</h2>
+  <div class="card" id="scoreboard"><span class="empty">loading…</span></div>
+
+  <h2>CASES</h2>
+  <div id="cases"><span class="empty">loading…</span></div>
+
+  <a class="back" href="index.html">← back to the pit</a>
+  &nbsp; <a href="newslab.html">the news lab</a>
+  &nbsp;·&nbsp; <a href="findings.html">the findings journal</a>
+</div>
+<script>
+const esc = s => { const d = document.createElement("span"); d.textContent = s ?? ""; return d.textContent; };
+const CUTOFF = "2026-08-15";
+const isClean = c => (c.date || "") >= CUTOFF;
+
+fetch("newstest.json?t=" + Date.now())
+  .then(r => { if (!r.ok) throw 0; return r.json(); })
+  .then(render)
+  .catch(() => {
+    document.getElementById("cases").innerHTML =
+      '<span class="empty">no published results yet.</span>';
+    document.getElementById("scoreboard").innerHTML =
+      '<span class="empty">no graded predictions yet.</span>';
+  });
+
+function gradeTxt(g) {
+  if (!g) return "";
+  let h = "";
+  for (const w of ["24h", "7d"]) {
+    const x = g[w];
+    if (x) h += `<span class="chip">${w}: called ${esc(x.called)} / actual ${esc(x.actual)}
+      <b class="${x.hit ? "hit" : "miss"}">${x.hit ? "HIT" : "MISS"}</b></span>`;
+  }
+  return h;
+}
+
+function caseNode(c, group) {
+  const out = c.outcome || {};
+  const pct = v => v == null ? '<span class="mut">–</span>' :
+    `<b class="${v >= 0 ? "up" : "down"}">${v >= 0 ? "+" : ""}${v}%</b>`;
+  const preds = c.predictions || [];
+  const hits = preds.filter(p => p.grade && p.grade["24h"] && p.grade["24h"].hit).length;
+  const graded = preds.filter(p => p.grade && p.grade["24h"]).length;
+  const dirs = [...new Set(preds.map(p => (p.parsed || {}).direction_7d).filter(Boolean))];
+  const verdict = dirs.length === 1 && preds.length > 1 ?
+    `<span class="chip ${dirs[0] === "up" ? "pos" : dirs[0] === "down" ? "neg" : ""}">both: ${esc(dirs[0])} 7d</span>` :
+    (dirs.length > 1 ? '<span class="chip gold">split</span>' : "");
+  const d = document.createElement("details");
+  d.className = "caserow";
+  let h = `<summary>
+      <span class="ctitle">${esc(c.title)}</span>
+      <span class="mut" style="font-size:11.5px">${esc(c.date)}</span>
+      ${c.source === "auto" ? '<span class="chip blue" title="picked automatically from the news wire">AUTO</span>' : ""}
+      <span class="chip ${isClean(c) ? "pos" : "gold"}">${isClean(c) ? "CLEAN" : "HINDSIGHT"}</span>
+      ${group === "Misc" && (c.coins || [])[0] ?
+        `<span class="chip" title="the story's subject is outside the test universe, so predictions and grading use this coin as the proxy">graded on ${esc(c.coins[0])} (proxy)</span>` : ""}
+      ${verdict}
+      <span class="mut" style="font-size:11.5px">24h ${pct(out["24h"])} · 7d ${pct(out["7d"])}
+        ${graded ? `· ${hits}/${graded} hit` : ""}</span>
+    </summary><div class="cbody">
+    <div class="meta">${c.url ? `<a href="${encodeURI(c.url)}" rel="noopener nofollow">read the article</a> · ` : ""}
+      ${esc((c.coins || []).join(", ") || "no coin")} ·
+      ${esc((c.cats || []).join(", ") || "no category")} ·
+      outcome: 24h ${pct(out["24h"])} · 72h ${pct(out["72h"])} · 7d ${pct(out["7d"])}
+      ${out.base_price ? " · base $" + out.base_price : ""}</div>
+    <div class="preds">`;
+  for (const p of preds) {
+    const pd = p.parsed || {};
+    const dir = v => v === "up" ? "pos" : (v === "down" ? "neg" : "");
+    h += `<div class="pred"><h4>${esc(p.model_name || p.model)}
+        <span class="mut" style="font-weight:400;font-size:11px">locked ${esc(p.locked_at)}</span></h4>
+      <span class="chip ${dir(pd.direction_24h)}">24h: ${esc(pd.direction_24h || "?")}</span>
+      <span class="chip ${dir(pd.direction_7d)}">7d: ${esc(pd.direction_7d || "?")}</span>
+      <span class="chip">exp 7d: ${esc(String(pd.expected_move_7d_pct ?? "?"))}%</span>
+      <span class="chip blue">conf ${esc(String(pd.confidence ?? "?"))}</span>
+      <div style="margin-top:5px">${gradeTxt(p.grade)}</div>
+      ${pd.rationale ? `<div class="mut" style="font-size:12px;margin-top:5px">“${esc(pd.rationale)}”</div>` : ""}
+    </div>`;
+  }
+  h += "</div></div>";
+  d.innerHTML = h;
+  return d;
+}
+
+function render(D) {
+  const cases = (D.cases || []).slice().sort((a, b) => b.id - a.id);
+  const box = document.getElementById("cases");
+  box.replaceChildren();
+  if (!cases.length) {
+    box.innerHTML = '<span class="empty">no cases published yet.</span>'; return;
+  }
+  /* group by the STORY'S SUBJECT (title), not the grading coin: a Zcash
+     story graded on BTC as a proxy belongs in Misc, labeled as a proxy */
+  const ORDER = ["BTC", "ETH", "SOL", "XRP", "DOGE", "Misc"];
+  const COIN_RX = { BTC: /\b(btc|bitcoin)\b/i, ETH: /\b(eth|ether|ethereum)\b/i,
+    SOL: /\b(sol|solana)\b/i, XRP: /\b(xrp|ripple)\b/i,
+    DOGE: /\b(doge|dogecoin)\b/i };
+  function subjectGroup(c) {
+    const t = c.title || "";
+    const named = ORDER.filter(k => COIN_RX[k] && COIN_RX[k].test(t));
+    if (named.length)
+      return named.includes((c.coins || [])[0]) ? c.coins[0] : named[0];
+    /* headline names no coin: fall back to what the analysts who READ the
+       article say it is primarily about (free - part of their prediction) */
+    const said = (c.predictions || [])
+      .map(p => (p.parsed || {}).primary_coin)
+      .filter(x => ORDER.includes(x));
+    if (said.length && said.every(x => x === said[0])) return said[0];
+    return "Misc";
+  }
+  const groups = {};
+  for (const c of cases) {
+    (groups[subjectGroup(c)] = groups[subjectGroup(c)] || []).push(c);
+  }
+  for (const g of ORDER) {
+    const list = groups[g];
+    if (!list) continue;
+    const graded = list.reduce((a, c) => a + (c.predictions || [])
+      .filter(p => p.grade && p.grade["24h"]).length, 0);
+    const hits = list.reduce((a, c) => a + (c.predictions || [])
+      .filter(p => p.grade && p.grade["24h"] && p.grade["24h"].hit).length, 0);
+    const preds = list.reduce((a, c) => a + (c.predictions || []).length, 0);
+    const det = document.createElement("details");
+    det.className = "coingroup";
+    det.open = true;
+    det.innerHTML = `<summary><span class="coinname">${g}</span>
+      <span class="gsum">${list.length} case${list.length === 1 ? "" : "s"} ·
+      ${preds} prediction${preds === 1 ? "" : "s"} ·
+      ${graded ? `24h: ${hits}/${graded} hit` : "none graded yet"}${
+      g === "Misc" ? " · subjects outside the five test coins, graded on a proxy" : ""}</span></summary>
+      <div class="gbody"></div>`;
+    const body = det.querySelector(".gbody");
+    for (const c of list) body.appendChild(caseNode(c, g));
+    box.appendChild(det);
+  }
+
+  /* scoreboard */
+  const rows = {};
+  for (const c of cases) for (const p of c.predictions || []) {
+    if (!p.grade || !p.grade["24h"]) continue;
+    const clean = isClean(c);
+    const k = (p.model_name || p.model) + (clean ? "|c" : "|h");
+    rows[k] = rows[k] || { m: p.model_name || p.model, cls: clean ? "CLEAN" : "HINDSIGHT-RISK",
+      n: 0, h24: 0, g24: 0, h7: 0, g7: 0 };
+    const r = rows[k]; r.n++;
+    if (p.grade["24h"]) { r.g24++; if (p.grade["24h"].hit) r.h24++; }
+    if (p.grade["7d"]) { r.g7++; if (p.grade["7d"].hit) r.h7++; }
+  }
+  const list = Object.values(rows);
+  const sb = document.getElementById("scoreboard");
+  if (!list.length) {
+    sb.innerHTML = '<span class="empty">no graded predictions yet — grades mature ' +
+      '24h and 7d after each locked call.</span>'; return;
+  }
+  sb.innerHTML = "<table><thead><tr><th>analyst</th><th>class</th>" +
+    "<th class=num>graded</th><th class=num>24h hits</th><th class=num>7d hits</th></tr></thead><tbody>" +
+    list.map(r => `<tr><td><b>${esc(r.m)}</b></td>
+      <td><span class="chip ${r.cls === "CLEAN" ? "pos" : "gold"}">${r.cls}</span></td>
+      <td class=num>${r.n}</td>
+      <td class=num>${r.g24 ? r.h24 + "/" + r.g24 : "–"}</td>
+      <td class=num>${r.g7 ? r.h7 + "/" + r.g7 : "–"}</td></tr>`).join("") +
+    "</tbody></table><div style='color:#898781;font-size:12px;margin-top:8px'>" +
+    "Only CLEAN rows measure real predictive skill; HINDSIGHT-RISK rows test the pipeline.</div>";
+}
+</script>
+</body>
+</html>

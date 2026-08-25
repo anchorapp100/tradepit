@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TRADEPIT — roadmap</title>
+<meta name="theme-color" content="#0d0d0d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%94%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0d0d0d; color: #c3c2b7;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 15px; line-height: 1.6; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 36px 22px 90px; }
+  h1 { color: #fff; font-size: 28px; letter-spacing: .1em; margin: 0 0 4px; }
+  h1 .pit { color: #3987e5; }
+  .tag { color: #898781; margin-bottom: 8px; }
+  .status { color: #898781; font-size: 13px; margin-bottom: 34px; }
+  .status b { color: #c3c2b7; font-weight: 600; }
+  h2 { font-size: 13px; letter-spacing: .12em; margin: 42px 0 14px; }
+  h2.done { color: #0ca30c; } h2.next { color: #3987e5; }
+  h2.gated { color: #fab219; } h2.later { color: #898781; } h2.you { color: #d55181; }
+  .tl { border-left: 2px solid #2c2c2a; margin-left: 7px; padding-left: 22px; }
+  .item { position: relative; margin: 0 0 18px; }
+  .item::before { content: ""; position: absolute; left: -29px; top: 7px;
+    width: 10px; height: 10px; border-radius: 50%; background: #383835; }
+  .item.done::before { background: #0ca30c; }
+  .item.next::before { background: #3987e5; }
+  .item.gated::before { background: #fab219; }
+  .item.you::before { background: #d55181; }
+  .item .t { color: #fff; font-weight: 600; }
+  .item .d { color: #898781; font-size: 12px; margin-left: 6px; }
+  .item p { margin: 3px 0 0; font-size: 13.5px; color: #c3c2b7; }
+  .gate { margin-top: 7px; }
+  .gate .lbl { color: #898781; font-size: 12px; margin-bottom: 3px; }
+  .bar { height: 7px; background: #222221; border-radius: 4px; overflow: hidden;
+    max-width: 340px; }
+  .bar i { display: block; height: 100%; background: #fab219; border-radius: 4px; }
+  a { color: #3987e5; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .back { display: inline-block; margin-top: 34px; padding: 10px 18px;
+    background: #1a1a19; border: 1px solid rgba(255,255,255,.12);
+    border-radius: 10px; color: #fff; font-weight: 600; }
+  .fine { color: #898781; font-size: 12.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>TRADE<span class="pit">PIT</span> roadmap</h1>
+  <div class="tag">what's shipped, what's next, and what the data has to earn
+    &nbsp;·&nbsp; <a href="findings.html">the findings journal</a></div>
+  <div class="status" id="status">loading live status…</div>
+
+  <h2 class="done">SHIPPED — THE FIRST 48 HOURS</h2>
+  <div class="tl">
+    <div class="item done"><span class="t">The experiment goes live</span><span class="d">20 Aug</span>
+      <p>Three-model debate (blind → roles → ballots), consensus gate, deterministic
+      risk layer, six arms, public dashboard.</p></div>
+    <div class="item done"><span class="t">Memory layer</span><span class="d">20 Aug</span>
+      <p>Every blind call scored against the next 24h; track records and a stop-out
+      lessons journal feed back into future debates (panel only — solos stay clean).</p></div>
+    <div class="item done"><span class="t">The analysis lab</span><span class="d">20 Aug</span>
+      <p>Calibration curves, stance ribbons, proposal funnel, pairwise agreement,
+      role capture, debate movement.</p></div>
+    <div class="item done"><span class="t">Migration to the Raspberry Pi</span><span class="d">21 Aug</span>
+      <p>Always-on, self-deploying, nightly backups. No desktop required.</p></div>
+    <div class="item done"><span class="t">Observer batch</span><span class="d">21 Aug</span>
+      <p>The Forced Hand (must trade the panel's best idea), two ghost books trading
+      the pit's rejects, and config version-stamping on every cycle.</p></div>
+    <div class="item done"><span class="t">Role-free blind rounds</span><span class="d">21 Aug · cfg f2892aad</span>
+      <p>The lab caught assigned roles steering "independent" takes within four
+      cycles; roles are now revealed only at the debate phase.</p></div>
+    <div class="item done"><span class="t">Three rival bots + news</span><span class="d">21 Aug</span>
+      <p>Quant trend-follower on 4h and 1h clocks, a buy-the-dip grid bot, a live
+      multi-source news wire, and the <a href="explain.html">plain-English explainer</a>.</p></div>
+    <div class="item done"><span class="t">Self-hosted news engine + dead-man's switch</span><span class="d">21 Aug</span>
+      <p>After every packaged news API paywalled in 2026, the Pi became its own
+      aggregator (publisher RSS + Google News + a free Finnhub wire, keyless core).
+      And the healthcheck ping is live: if the Pi goes silent, the human gets an email.</p></div>
+    <div class="item done"><span class="t">The alarm bell (stage 1) + the costs page</span><span class="d">22 Aug</span>
+      <p>A 15-minute price watcher now wakes the panel off-schedule on violent moves
+      (±3%, cooldown + daily cap), with the brief stating why — "an alert is
+      information, not an instruction to trade." Its maiden firing caught a real
+      ETH flush; the panel considered dip-buys and declined. Plus a COSTS tab:
+      estimated token spend per model, subscription and free tiers shown at
+      API-equivalent rates.</p></div>
+    <div class="item done"><span class="t">Grid twins, family cards, reputation on display</span><span class="d">22 Aug</span>
+      <p>The grid bot gained an identical "with reflexes" twin that also answers the
+      alarm bell — one variable, measured by the gap between them. The rivals
+      regrouped into colour-coded family cards, debate cards now wear live hit-rate
+      chips, and moved-in-debate badges credit whose idea a convert adopted.</p></div>
+    <div class="item done"><span class="t">The first trade — and what it taught</span><span class="d">22 Aug</span>
+      <p>An alarm wake produced the experiment's first 3/3: long BTC at confidence 61,
+      the bear advocate conceding on the record. One cycle later, roles rotated and a
+      2/3 vote closed it for −$5 — over a dissent ("closing after one candle is
+      overtrading") that the record now preserves: contested closes permanently name
+      backers and dissenters. The exit ignored the entry's own invalidation — which
+      wrote two items straight into v3 below. The alarm allowance was also widened
+      from 3 to 5 wakes/day via a new one-line switch (version-stamped like every
+      config change); the fifth wake of the era, a DOGE upside spike, was
+      unanimously declined.</p></div>
+    <div class="item done"><span class="t">Quorum fallback — the show goes on</span><span class="d">23 Aug</span>
+      <p>The alarm bell's extra cycles blew through Gemini's free-tier daily quota
+      (42 calls on 22 Aug vs a limit near 30), leaving the panel two-handed for
+      several cycles — and one silent panelist used to block every open. Now a
+      <em>technical</em> silence (HTTP 429, outage) hands the gate to the responding
+      pair: both must still agree, such cycles wear a QUORUM chip, and a panelist
+      who actually voted flat still blocks opens. Quota-dead panelists are also
+      skipped for the rest of the cycle instead of burning 90s of doomed retries
+      per phase.</p></div>
+    <div class="item done"><span class="t">Gemini gets its voice back — subscription via Antigravity</span><span class="d">23 Aug</span>
+      <p>The permanent fix for the quota deaths: the Gemini leg now runs through
+      Google's Antigravity CLI on a Google AI Pro subscription — the same
+      pattern as the Claude leg — pinned to Gemini 3.5 Flash (low reasoning),
+      the nearest match to the API panelist's thinking-disabled setup. Getting
+      there was its own story: Google retired the old gemini-cli sign-in for
+      individuals in June 2026 mid-setup. The API key stays wired as a fallback,
+      and the quorum rule remains as insurance. Transport change, version-stamped.</p></div>
+    <div class="item done"><span class="t">The bench opens early — selection starts scoring</span><span class="d">23 Aug</span>
+      <p>The league's scoring wing didn't need to wait for its pressure wing: three
+      shadow panelists now give one blind, scored stance per cycle — zero influence,
+      panel unaware. Opening roster is the <em>reasoning tier</em>: Claude Opus 5
+      (rides the same Claude plan as the sonnet panelist), Gemini 3.7 Flash on high
+      reasoning (same Antigravity login), and DeepSeek Reasoner (same API key,
+      pennies). Every one is the smarter sibling of a sitting panelist — three
+      controlled tests of whether more reasoning means better calls. Hours later the
+      challenger wing landed too: <em>Kimi K3, Grok 4.6 and GPT-5.x</em> joined via
+      their own subscription CLIs (kimi-cli, Grok Build, Codex) — six bench seats
+      total, every one riding a subscription the operator already pays for. By the
+      time the league's gates open, the bench arrives with records, not promises.
+      The overview now carries the full league table — all nine minds on one
+      scoreboard, debaters highlighted — and, for reasons of pure joy, a
+      1970s seven-segment red LED clock in the header.</p></div>
+    <div class="item done"><span class="t">The 2-of-3 ghost — settling the threshold question</span><span class="d">24 Aug</span>
+      <p>Three days in, the pit had made one trade, and the obvious reflex was "lower
+      the bar from 3/3 to 2/3." A diagnostic killed that: across 31 cycles, in 19 of
+      them <em>nobody</em> even wanted to trade — the threshold was never the
+      constraint, conviction was. So instead of touching the live gate, a fourth
+      ghost now replays the same ballots under a 2-of-3 rule on its own book (free,
+      no extra debate). If it beats the pit, unanimity is too strict; if it bleeds,
+      the wait was worth it. Over the first three days it would have opened just one
+      extra trade — because even the near-misses failed on conviction, not votes.</p></div>
+    <div class="item done"><span class="t">NEWSTEST — the walk-forward prediction testbed</span><span class="d">23–24 Aug</span>
+      <p>A sister experiment, built and hardened in 48 hours: a news article goes in,
+      two blinded analysts (Gemini via tool-less API, Grok via CLI with search
+      disabled) each lock a timestamped prediction — direction at 24h and 7d,
+      expected magnitude, confidence — and only then is the real price revealed and
+      graded. Cases dated before the models' training are quarantined as
+      HINDSIGHT-RISK; only post-training CLEAN cases measure real foresight, and the
+      two ledgers never mix (self-reported cutoffs proved unreliable in both
+      directions — the calendar decides). Runs permanently on the Pi; every article
+      on the news wire carries a one-click "test →" feed-in; and since 24 Aug an
+      <em>auto-collector</em> picks newsworthy stories itself (severity-scored,
+      budget-capped at 6/day), asks both analysts, grades matured windows, and
+      publishes the ledger to this site — a newsroom that never sleeps and never
+      believes its own headlines. Its graded cases are the seed evidence for the
+      event ledger below.</p></div>
+    <div class="item done"><span class="t">Multi-horizon scoring — 24h · 7d · 14d · 30d</span><span class="d">24 Aug</span>
+      <p>Every blind call was being graded only against tomorrow — the noisiest,
+      least-predictable horizon, which may have been hiding real skill and quietly
+      training the panel toward timidity (why commit to a fortnight thesis you're
+      graded on in a day?). Now each call is scored at four horizons as they mature.
+      The league table shows all four; a mind poor at the day may prove sharp at the
+      month. The instrument is installed now so it captures each window as it comes
+      due — first 7d results ~27 Aug, 14d ~3 Sep, 30d ~19 Sep.</p></div>
+    <div class="item done"><span class="t">The auto-collector stops missing the news</span><span class="d">25 Aug</span>
+      <p>On its first full night the collector filed a single story while dozens
+      crossed the wire. The autopsy: nearly half the wire is Google News redirect
+      links it couldn't open, and its freshness test used the article's publish
+      time instead of when the story first reached our wire. Both fixed — it now
+      resolves Google links to the real publisher, times freshness from first
+      sight, and when a publisher blocks the fetch outright it seals a
+      headline-only case rather than losing the story. Two reliability layers
+      landed the same day: when one analyst's model pool is overloaded the other
+      model tiers are tried in turn (outages proved to be per-pool, not total),
+      and any half-answered case is quietly retried until both analysts have
+      locked. Throughput went from one case a night to several a day.</p></div>
+    <div class="item done"><span class="t">Off metered hosting — and a spine that survives a dead card</span><span class="d">25 Aug</span>
+      <p>The dashboard republishes itself every few minutes, which quietly turned
+      into a bill: the old host charges per deploy, and a week of that paused the
+      account. The whole site moved to GitHub Pages — free, unmetered, and the old
+      address permanently forwards, so nothing already shared breaks. In the same
+      pass the code and the full experiment record — every cycle, trade and sealed
+      prediction — began backing up nightly to a private repository off the Pi, so
+      a failed memory card is now a re-flash, not a lost experiment. And the
+      project was wired into an AI context bridge: any assistant picking it up now
+      starts with the whole system — architecture, hard-won constraints, live
+      state — instead of guessing.</p></div>
+  </div>
+
+  <h2 class="next">NEXT — THE v3 MECHANISM BATCH <span class="fine">(target ~24–25 Aug, lands as one version boundary)</span></h2>
+  <div class="tl">
+    <div class="item next"><span class="t">Daily regime memo + the cycle clock</span>
+      <p>Once a day the panel writes a one-paragraph regime view, pinned into all six
+      fast cycles — carrying deterministic facts the panel currently can't see:
+      months since the halving, distance from the all-time high, and the historical
+      four-year rhyme table (with its "n=4, prior not law" warning attached).</p></div>
+    <div class="item next"><span class="t">Event ledger + precedent memory</span>
+      <p>Headlines get tagged, then scored against what price actually did from our
+      next decision point. Future debates see receipts: "XRP/political precedents,
+      n=3: +16%, +2%, −4%." Runs on the Pi's own self-aggregated, self-tagged news
+      — no paid news API involved. The NEWSTEST testbed (see SHIPPED) is its
+      proving ground: every graded case builds the precedent library, and the
+      analysts' CLEAN scoreboard decides whether their opinions ever earn a place
+      alongside the statistics — the pit receives receipts, never hearsay. <strong>Groundwork already live (23 Aug):</strong>
+      an hourly <em>keyword matrix</em> — per-coin mention counts, positive/negative
+      valence co-occurrence, and category hits (regulatory, security, adoption,
+      macro) — computed deterministically from the news wire for free, logged to
+      history so bursts can be measured against each coin's own baseline. The
+      matrix is a tripwire, not a judge: "XRP crash fears fade" still counts a
+      scary word, which is why the reading layers above it exist. The salience
+      tagger will run on the freed-up Gemini API key (its free tier fits an hourly
+      batch perfectly now the panel leg moved to subscription); a family-independent
+      tagger (e.g. Qwen) is a one-line config swap later if tagging-bias tests
+      warrant strict separation from the panel's model families.</p></div>
+    <div class="item next"><span class="t">Time-boxed exits — the horizon call</span>
+      <p>The panel schedules an exit at entry ("long BTC, out in 25 cycles") —
+      enforced by code, no model awake at sell time. Now evidence-backed: the
+      multi-horizon scoreboard will show <em>which</em> timescale each mind is
+      actually good at, so a horizon call becomes something earned rather than
+      guessed. This is what a grown-up TradePit looks like — trading on the
+      timescale it has demonstrated skill on, quoting a distribution of likely
+      outcomes ("precedents: +5% median, −3% to +12%") rather than a false-precise
+      promise. Direction is the easy part; committing a horizon is D6; predicting
+      magnitude honestly (with error bars) is the hardest, and is being trialled
+      separately in the news-prediction testbed first.</p></div>
+    <div class="item next"><span class="t">Debate-quality prompts (rev 3)</span>
+      <p>Born from watching cycle #7 fail well: a synthesis nudge ("repair a flawed
+      trade — resize it — don't just reject it") and forced engagement with each
+      other's stated invalidation levels. Trade #1 supplied the third fix: a close
+      vote must name which part of the entry thesis actually broke — "it's slightly
+      down after one candle" is churn, not analysis.</p></div>
+    <div class="item next"><span class="t">Post-mortems for chosen losses</span>
+      <p>The lessons journal only opens after stop-outs, so the pit's first loss —
+      exited by vote, not by stop — left no journal entry. v3 extends post-mortems
+      to any losing close, machine- or panel-decided.</p></div>
+  </div>
+
+  <h2 class="gated">DATA-GATED — UNLOCKED BY EVIDENCE, NOT ENTHUSIASM</h2>
+  <div class="tl">
+    <div class="item gated"><span class="t">Reputation-weighted consensus (O1)</span>
+      <p>Track records stop being rhetoric: a 2-of-3 open can pass when both backers
+      have proven 24h hit rates. Requires 30 scored calls per panelist.</p>
+      <div class="gate" data-gate="scored30"><div class="lbl"></div><div class="bar"><i></i></div></div></div>
+    <div class="item gated"><span class="t">Red-team round (O2)</span>
+      <p>When a 3/3 forms, the least-convinced panelist must try to kill it before
+      execution. Decision point alongside O1.</p></div>
+    <div class="item gated"><span class="t">First full analysis → picks the next mechanics</span>
+      <p>At ~84 cycles: calibration verdict, gate value via the ghosts, panel-vs-solo
+      delta, stop-out autopsy. The evidence chooses between volatility-scaled stops
+      (D3) and confidence-weighted sizing (D4).</p>
+      <div class="gate" data-gate="cycles84"><div class="lbl"></div><div class="bar"><i></i></div></div></div>
+    <div class="item gated"><span class="t">Forced Hand conviction floor</span>
+      <p>Its fallback trades are tagged; if the weak-conviction scraps keep bleeding,
+      the data sets a floor. Reviewed at the full analysis.</p></div>
+    <div class="item gated"><span class="t">Calibration curves, full depth</span>
+      <p>Trustworthy shape at ~50 scored calls per panelist.</p>
+      <div class="gate" data-gate="scored50"><div class="lbl"></div><div class="bar"><i></i></div></div></div>
+    <div class="item gated"><span class="t">The league: probation, bench &amp; promotion (O6) — natural selection</span>
+      <p>Full league structure — in effect a natural-selection experiment:
+      variation on the bench, selection by scored record, inheritance of the
+      seat. The worst-scored panelist first gets a truthful <em>probation notice
+      in its own prompt</em> ("your hit rate is X%; improve by &lt;date&gt; or be
+      replaced") — a clean experiment in how AI argues under existential
+      pressure. Meanwhile the bench sits as <em>shadow panelists</em>: each cycle
+      they give one blind, scored stance — same briefs, same 24h grading, zero
+      influence, the panel unaware. The bench pool has two wings: outside
+      challengers (Kimi, Grok, GPT — need their own keys) and <strong>the
+      reasoning tier</strong> — heavier variants of the incumbents themselves
+      (Gemini 3.7 Flash on high reasoning, and friends), served free through the
+      same Antigravity subscription login as the live Gemini leg. That wing
+      answers a standing question with data instead of faith: <em>do better
+      reasoning models actually call markets better, or just sound better?</em>
+      At the switch window, the best bench record takes the seat — whether an
+      outside challenger or the incumbent's own smarter sibling — and the
+      relegated member drops to the bench where it keeps being scored: it can
+      earn its way back. Guardrail first: a minimum directional-call rate, so
+      freezing your record by going permanently flat can never be the winning
+      strategy — survival must go to the best <em>caller</em>, not the most
+      careful abstainer. <strong>Update 23 Aug:</strong> the scoring wing is
+      already live (see SHIPPED) — this gate now covers only the pressure
+      mechanics: probation notices, promotion windows, relegation.
+      <strong>Succession mechanics (agreed):</strong> a promoted member gets a
+      fresh solo control born at $10,000; the relegated member's solo is
+      flattened and frozen — its card stays in the solos family, dulled, as a
+      finished specimen — so the family grows into a stratigraphy of every era.
+      Current debaters' solos hold the top row. The pit's own book never resets:
+      the pit is the institution, not its members. Comparisons become era-aware,
+      bounded by the version stamps that mark each swap; and seat in the pit
+      means your solo trades, seat on the bench means your mind is scored but
+      no book. <strong>Returns:</strong> one card per model, ever — a career
+      file, not a stint's card. A member that earns its seat back un-freezes its
+      own card (back to the top row, "2nd stint" chip), the book restarts at
+      $10,000, and the equity line shows an honest <em>break</em> for the
+      benched period — segmented, never bridged, so no phantom recovery is
+      drawn across the gap. The exile stays visible in the line itself.
+      <strong>Reputations are permanent:</strong> one lifelong scored record per
+      mind, accruing wherever it sits — pit or bench — never reset, never
+      laundered. Because a career average is nearly immovable after 100+ calls
+      (returning from 19% to a 76% average would take ~237 straight hits), the
+      league reads the permanent record two ways: <em>career</em> (lifetime,
+      the identity) and <em>form</em> (trailing ~30 scored calls, what
+      promotion and relegation decisions use). A returner is introduced to the
+      debate with both: "career 34% over 160 · last 30: 76% — weigh
+      accordingly." No hiding the past; no imprisonment by it.</p>
+      <div class="gate" data-gate="cycles180"><div class="lbl"></div><div class="bar"><i></i></div></div></div>
+  </div>
+
+  <h2 class="later">LATER — THE LONG GAME</h2>
+  <div class="tl">
+    <div class="item"><span class="t">Prompt self-tuning (O7)</span>
+      <p>Monthly: a model reads the analysis and proposes one prompt change; human
+      approves; version bumps. The experiment starts improving its own harness.</p></div>
+    <div class="item"><span class="t">An influence economy (thought experiment)</span>
+      <p>Not token rewards — an LLM has no pocket to put them in, and in the token
+      networks it's the human operators being paid. But earned credibility as a
+      <em>spendable</em> resource is a real open question: a panelist could choose to
+      spend banked reputation on a second rebuttal, a one-trade size boost, or
+      forcing a re-vote. Does a model hoard influence or spend it? Nobody has
+      measured that. Goodhart-hazardous by design, so it waits until the league
+      has proven plain selection works — and lands, if ever, as its own marked
+      era.</p></div>
+    <div class="item"><span class="t">Transcript mining</span>
+      <p>A thousand debates as a linguistics dataset: which argument patterns precede
+      wins, who anchors, who capitulates — probably the most publishable output.</p></div>
+    <div class="item"><span class="t">Realism upgrades &amp; Kelly-lite sizing</span>
+      <p>Funding costs on shorts, spread-aware fills; size scaled by measured edge
+      once 100+ trades exist.</p></div>
+    <div class="item"><span class="t">Weekly digest, exposure timeline, event-vs-swing books</span>
+      <p>Visual layer that grows as the data does.</p></div>
+    <div class="item"><span class="t">Panel B — the B-team</span>
+      <p>A second trio from different model families (Kimi, Grok, GPT) on the SAME
+      4h clock: tests whether the debate mechanism generalises beyond our three, or
+      whether every panel evolves its own coalitions and its own DeepSeek. Same
+      clock deliberately — one variable at a time. First feature that costs actual
+      money (~£5–10/mo), so it waits for the week-two evidence that the mechanism
+      deserves it. Bonus: when both panels independently agree, that six-model
+      consensus becomes a tradeable meta-signal for a free observer book.</p></div>
+    <div class="item"><span class="t">The alarm bell, stage 2: news-salience wakes</span>
+      <p>Once the event ledger can rank stories, genuinely major tagged news joins
+      price shocks as a wake trigger — the full "alert, then decide" trading loop.
+      Speed where speed pays, deliberation on the slow clock where it belongs.
+      <strong>How "high potential" gets decided (design agreed 23 Aug):</strong>
+      a three-layer funnel. Layer 1, deterministic tells — corroboration velocity
+      (one outlet is chatter; five independent sources in twenty minutes is an
+      event), per-coin headline-burst detection against baseline rates, and a
+      severity keyword tier (hack, halted withdrawals, ETF ruling…). Layer 2,
+      the event ledger's cheap salience tagger scores survivors against one
+      rubric: would a desk trader want to be pinged? Layer 3, the real answer:
+      wake rights are <em>earned by category</em> — only story types whose
+      measured aftermath historically moved price from our decision point
+      (median |24h move| ≥ 2× baseline, n≥5) may ring the bell. The bell learns
+      what deserves ringing from its own receipts. Near-miss stories get logged
+      as a quiet set so the threshold can be audited both ways. Kill criterion,
+      stated in advance: if the ledger shows every category is fully priced in
+      before a 15-minute watcher could convene the panel, news wakes are
+      worthless and the findings journal will say so instead of shipping
+      them.</p></div>
+  </div>
+
+  <h2 class="you">YOUR MOVES — TWO-MINUTE TASKS WAITING ON A HUMAN</h2>
+  <div class="tl">
+    <div class="item done"><span class="t">Everything delivered — the list is empty</span>
+      <p>All human tasks complete: Finnhub key live in the news aggregator, Alpha
+      Vantage key banked for the event ledger, healthcheck tuned to the Pi's exact
+      cron schedule with a 30-minute grace. The next human ask, if it ever comes,
+      is Panel B's paid API keys — and that waits on the week-two evidence.</p></div>
+  </div>
+
+  <a class="back" href="index.html">← back to the dashboard</a>
+  <p class="fine" style="margin-top:18px">Principles: observer additions ship immediately;
+  mechanism changes land as marked version boundaries, one at a time; the solo arms
+  stay frozen forever as the control. Deep detail: the
+  <a href="TRADEPIT_Experiment.pdf">experiment dossier</a>.</p>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  const D = window.TP_DATA;
+  const s = document.getElementById("status");
+  if (!D) { s.textContent = "live status unavailable"; return; }
+  const cycles = D.meta.n_cycles;
+  const version = (D.cycles && D.cycles[0] && D.cycles[0].version) || "?";
+  const scored = Object.values(D.panelists_stats || {}).map(p => p.scored || 0);
+  const minScored = scored.length ? Math.min(...scored) : 0;
+  s.innerHTML = "";
+  s.appendChild(document.createTextNode(""));
+  const b = (t) => { const x = document.createElement("b"); x.textContent = t; return x; };
+  s.append("live status: ", b(cycles + " cycles"), " · config ", b(String(version)),
+    " · ", b(minScored + " scored calls"), " (slowest panelist) · updated ",
+    b(new Date(D.meta.generated_at).toLocaleString("en-GB",
+      { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })));
+  const gates = {
+    scored30: { now: minScored, need: 30, label: "scored calls per panelist" },
+    scored50: { now: minScored, need: 50, label: "scored calls per panelist" },
+    cycles84: { now: cycles, need: 84, label: "cycles" },
+    cycles180: { now: cycles, need: 180, label: "cycles" },
+  };
+  document.querySelectorAll("[data-gate]").forEach(g => {
+    const spec = gates[g.dataset.gate];
+    if (!spec) return;
+    const pct = Math.min(100, 100 * spec.now / spec.need);
+    g.querySelector(".lbl").textContent =
+      `${spec.now} / ${spec.need} ${spec.label} (${pct.toFixed(0)}%)`;
+    g.querySelector(".bar i").style.width = pct.toFixed(1) + "%";
+  });
+})();
+</script>
+</body>
+</html>
